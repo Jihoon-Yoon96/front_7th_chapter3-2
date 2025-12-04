@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Product } from '../../../types.ts';
-import Button from '../ui/Button.tsx';
+import { Product } from '../../../../types.ts';
+import Button from '../../ui/Button.tsx';
 
 interface ProductWithUI extends Product {
   description?: string;

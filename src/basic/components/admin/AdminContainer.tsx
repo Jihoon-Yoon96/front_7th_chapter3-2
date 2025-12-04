@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Coupon, Product } from '../../../types.ts';
 import Button from '../ui/Button.tsx';
-import AdminProduct from './AdminProduct.tsx';
-import AdminCoupon from './AdminCoupon.tsx';
+import AdminProduct from './products/AdminProduct.tsx';
+import AdminCoupon from './coupons/AdminCoupon.tsx';
 
 interface ProductWithUI extends Product {
   description?: string;
