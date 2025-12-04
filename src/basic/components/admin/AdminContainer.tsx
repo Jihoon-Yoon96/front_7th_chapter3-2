@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import { Coupon, Product } from '../../../types.ts';
-import Button from '../ui/Button.tsx';
-import AdminProduct from './products/AdminProduct.tsx';
-import AdminCoupon from './coupons/AdminCoupon.tsx';
-
-interface ProductWithUI extends Product {
-  description?: string;
-  isRecommended?: boolean;
-}
+import { Coupon } from '../../../types';
+import { ProductWithUI } from '../../model/productModels';
+import Button from '../ui/Button';
+import AdminProduct from './products/AdminProduct';
+import AdminCoupon from './coupons/AdminCoupon';
 
 interface AdminContainerProps {
   products: ProductWithUI[];

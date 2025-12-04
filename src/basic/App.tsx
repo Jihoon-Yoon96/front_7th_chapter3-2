@@ -1,22 +1,13 @@
 import { useState, useCallback, useEffect } from 'react';
 import { CartItem, Coupon, Product } from '../types';
-import { initialCoupons } from "./constant/coupons.ts";
-import { initialProducts } from "./constant/product.ts";
+import { ProductWithUI } from './model/productModels';
+import { Notification } from './model/notificationModels';
+import { initialCoupons } from "./constant/coupons";
+import { initialProducts } from "./constant/product";
 import AdminContainer from './components/admin/AdminContainer';
 import NotificationContainer from './components/ui/Notification';
 import Header from './components/Header';
 import CartContainer from './components/cart/CartContainer';
-
-interface ProductWithUI extends Product {
-  description?: string;
-  isRecommended?: boolean;
-}
-
-interface Notification {
-  id: string;
-  message: string;
-  type: 'error' | 'success' | 'warning';
-}
 
 const App = () => {
 

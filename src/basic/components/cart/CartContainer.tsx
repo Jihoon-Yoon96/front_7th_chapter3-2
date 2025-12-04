@@ -1,12 +1,8 @@
 import React from 'react';
 import { Product, CartItem, Coupon } from '../../../types';
-import Products from './Products.tsx';
-import Cart from './Cart.tsx';
-
-interface ProductWithUI extends Product {
-  description?: string;
-  isRecommended?: boolean;
-}
+import { ProductWithUI } from '../../model/productModels';
+import Products from './Products';
+import Cart from './Cart';
 
 interface CartContainerProps {
   products: ProductWithUI[];

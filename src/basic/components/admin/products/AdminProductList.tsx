@@ -1,11 +1,7 @@
 import React from 'react';
 import { Product } from '../../../../types';
+import { ProductWithUI } from '../../../model/productModels';
 import Button from '../../ui/Button';
-
-interface ProductWithUI extends Product {
-  description?: string;
-  isRecommended?: boolean;
-}
 
 interface AdminProductListProps {
   products: ProductWithUI[];
