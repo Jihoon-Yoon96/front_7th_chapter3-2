@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { CartItem, Coupon, Product } from '../types';
-import Admin from './components/Admin';
+import AdminContainer from './components/admin/AdminContainer.tsx';
 import Cart from './components/Cart';
 import Products from './components/Products';
 import Button from './components/ui/Button';
@@ -413,7 +413,7 @@ const App = () => {
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {isAdmin ? (
-          <Admin
+          <AdminContainer
             products={products}
             coupons={coupons}
             addProduct={addProduct}
