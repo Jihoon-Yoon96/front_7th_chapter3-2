@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Notification } from './model/notificationModels';
 import AdminContainer from './components/admin/AdminContainer';
 import NotificationContainer from './components/ui/Notification';
 import Header from './components/Header';
@@ -7,23 +6,15 @@ import CartContainer from './components/cart/CartContainer';
 import { useProducts } from './hooks/useProducts';
 import { useCoupons } from './hooks/useCoupons';
 import { useCart } from './hooks/useCart';
+import { useNotifications } from './hooks/useNotifications';
 import { formatPrice as formatCurrency } from './utils/formatters';
 
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
-  const addNotification = useCallback((message: string, type: 'error' | 'success' | 'warning' = 'success') => {
-    const id = Date.now().toString();
-    setNotifications(prev => [...prev, { id, message, type }]);
-    
-    setTimeout(() => {
-      removeNotification(id);
-    }, 3000);
-  }, []);
-
+  const { notifications, addNotification, removeNotification } = useNotifications();
   const { products, addProduct, updateProduct, deleteProduct } = useProducts(addNotification);
   const { coupons, addCoupon, deleteCoupon } = useCoupons(addNotification);
   const { 
@@ -39,10 +30,6 @@ const App = () => {
     getRemainingStock,
     calculateItemTotal
   } = useCart(products, addNotification);
-
-  const removeNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  };
 
   const [totalItemCount, setTotalItemCount] = useState(0);
   
