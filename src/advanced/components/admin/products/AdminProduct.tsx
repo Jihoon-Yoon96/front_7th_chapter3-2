@@ -4,7 +4,7 @@ import AdminProductList from './AdminProductList';
 import AdminProductForm from './AdminProductForm';
 import { useSetAtom } from 'jotai';
 import { addProductAtom, updateProductAtom } from '../../../store/productAtoms';
-import { Product } from '../../../../types';
+import { Product } from '../../../entities/product/model/types';
 
 const AdminProduct: React.FC = () => {
   const addProduct = useSetAtom(addProductAtom);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Product } from '../../../types';
+import { Product } from '../../../entities/product/model/types';
 import Button from '../../ui/Button';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { productsAtom, deleteProductAtom } from '../../../store/productAtoms';

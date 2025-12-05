@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '../../ui/Button';
 import { useSetAtom } from 'jotai';
 import { addNotificationAtom } from '../../../store/notificationAtoms';
-import { Product } from '../../../../types';
+import { Product } from '../../../entities/product/model/types';
 
 interface AdminProductFormProps {
   productForm: Omit<Product, 'id'>;
