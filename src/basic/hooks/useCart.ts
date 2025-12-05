@@ -5,6 +5,7 @@ import { Product } from '../entities/product/model/types';
 import { ProductWithUI } from '../model/productModels';
 import { getRemainingStock } from '../entities/product/lib/stock';
 import { calculateCartTotal, calculateItemTotal } from '../entities/cart/lib/calc';
+import { addItem, updateItemQuantity as updateCartItemQuantityFn } from '../entities/cart/lib/cartManager';
 
 type AddNotification = (message: string, type?: 'error' | 'success' | 'warning') => void;
 
@@ -36,63 +37,25 @@ export const useCart = (products: ProductWithUI[], addNotification: AddNotificat
   }, [cart]);
 
   const addToCart = useCallback((product: ProductWithUI) => {
-    const remainingStock = memoizedGetRemainingStock(product);
-    if (remainingStock <= 0) {
-      addNotification('재고가 부족합니다!', 'error');
-      return;
-    }
-
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.product.id === product.id);
-      
-      if (existingItem) {
-        const newQuantity = existingItem.quantity + 1;
-        
-        if (newQuantity > product.stock) {
-          addNotification(`재고는 ${product.stock}개까지만 있습니다.`, 'error');
-          return prevCart;
-        }
-
-        return prevCart.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: newQuantity }
-            : item
-        );
-      }
-      
-      return [...prevCart, { product, quantity: 1 }];
-    });
-    
-    addNotification('장바구니에 담았습니다', 'success');
-  }, [cart, addNotification, memoizedGetRemainingStock]);
+    const { newCart, success, notification } = addItem(cart, product);
+    setCart(newCart);
+    addNotification(notification, success ? 'success' : 'error');
+  }, [cart, addNotification]);
 
   const removeFromCart = useCallback((productId: string) => {
     setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
   }, []);
 
-  const updateQuantity = useCallback((productId: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeFromCart(productId);
-      return;
-    }
-
+  const updateCartItemQuantity = useCallback((productId: string, newQuantity: number) => {
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
-    const maxStock = product.stock;
-    if (newQuantity > maxStock) {
-      addNotification(`재고는 ${maxStock}개까지만 있습니다.`, 'error');
-      return;
+    const { newCart, error } = updateCartItemQuantityFn(cart, productId, newQuantity, product.stock);
+    setCart(newCart);
+    if (error) {
+      addNotification(error, 'error');
     }
-
-    setCart(prevCart =>
-      prevCart.map(item =>
-        item.product.id === productId
-          ? { ...item, quantity: newQuantity }
-          : item
-      )
-    );
-  }, [products, removeFromCart, addNotification]);
+  }, [cart, products, addNotification]);
 
   const applyCoupon = useCallback((coupon: Coupon) => {
     const currentTotal = calculateCartTotal(cart, selectedCoupon).totalAfterDiscount;
@@ -119,7 +82,7 @@ export const useCart = (products: ProductWithUI[], addNotification: AddNotificat
     totals,
     addToCart,
     removeFromCart,
-    updateQuantity,
+    updateQuantity: updateCartItemQuantity,
     applyCoupon,
     setSelectedCoupon,
     completeOrder,
