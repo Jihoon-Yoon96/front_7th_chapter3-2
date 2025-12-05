@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Coupon } from '../../../types';
+import { Coupon } from '../../entities/coupon/model/types';
 import { ProductWithUI } from '../../model/productModels';
 import Button from '../ui/Button';
 import AdminProduct from './products/AdminProduct';

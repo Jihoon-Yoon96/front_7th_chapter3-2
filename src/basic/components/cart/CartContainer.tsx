@@ -1,5 +1,7 @@
 import React from 'react';
-import { Product, CartItem, Coupon } from '../../../types';
+import { Product } from '../../entities/product/model/types';
+import { CartItem } from '../../entities/cart/model/types';
+import { Coupon } from '../../entities/coupon/model/types';
 import { ProductWithUI } from '../../model/productModels';
 import Products from './Products';
 import Cart from './Cart';
