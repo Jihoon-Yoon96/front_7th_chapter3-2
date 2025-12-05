@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Coupon } from '../entities/coupon/model/types';
 import { initialCoupons } from '../constant/coupons';
+import { addCoupon as addCouponManager, deleteCoupon as deleteCouponManager } from '../entities/coupon/lib/couponManager';
 
 type AddNotification = (message: string, type?: 'error' | 'success' | 'warning') => void;
 
@@ -22,19 +23,16 @@ export const useCoupons = (addNotification: AddNotification) => {
   }, [coupons]);
 
   const addCoupon = useCallback((newCoupon: Coupon) => {
-    const existingCoupon = coupons.find(c => c.code === newCoupon.code);
-    if (existingCoupon) {
-      addNotification('이미 존재하는 쿠폰 코드입니다.', 'error');
-      return;
-    }
-    setCoupons(prev => [...prev, newCoupon]);
-    addNotification('쿠폰이 추가되었습니다.', 'success');
+    const { newCoupons, success, message } = addCouponManager(coupons, newCoupon);
+    setCoupons(newCoupons);
+    addNotification(message, success ? 'success' : 'error');
   }, [coupons, addNotification]);
 
   const deleteCoupon = useCallback((couponCode: string) => {
-    setCoupons(prev => prev.filter(c => c.code !== couponCode));
+    const { newCoupons } = deleteCouponManager(coupons, couponCode);
+    setCoupons(newCoupons);
     addNotification('쿠폰이 삭제되었습니다.', 'success');
-  }, [addNotification]);
+  }, [coupons, addNotification]);
 
   return {
     coupons,
