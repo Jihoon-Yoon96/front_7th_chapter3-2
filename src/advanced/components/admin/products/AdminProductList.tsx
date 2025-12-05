@@ -3,15 +3,16 @@ import { Product } from '../../../types';
 import Button from '../../ui/Button';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { productsAtom, deleteProductAtom } from '../../../store/productAtoms';
+import { priceFormatterAtom } from '../../../store/uiAtoms';
 
 interface AdminProductListProps {
   startEditProduct: (product: Product) => void;
-  formatPrice: (price: number, productId?: string) => string;
 }
 
-const AdminProductList: React.FC<AdminProductListProps> = ({ startEditProduct, formatPrice }) => {
+const AdminProductList: React.FC<AdminProductListProps> = ({ startEditProduct }) => {
   const products = useAtomValue(productsAtom);
   const deleteProduct = useSetAtom(deleteProductAtom);
+  const formatPrice = useAtomValue(priceFormatterAtom);
 
   return (
     <div className="overflow-x-auto">

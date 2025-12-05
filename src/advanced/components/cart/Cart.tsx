@@ -1,36 +1,28 @@
 import React from 'react';
-import { CartItem, Coupon } from '../../../types.ts';
 import Button from '../ui/Button.tsx';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { couponsAtom } from '../../store/couponAtoms.ts';
+import { 
+  cartAtom, 
+  selectedCouponAtom, 
+  totalsAtom, 
+  removeFromCartAtom, 
+  updateQuantityAtom, 
+  applyCouponAtom, 
+  completeOrderAtom,
+  itemTotalSelector
+} from '../../store/cartAtoms.ts';
 
-interface CartProps {
-  cart: CartItem[];
-  selectedCoupon: Coupon | null;
-  totals: {
-    totalBeforeDiscount: number;
-    totalAfterDiscount: number;
-  };
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, newQuantity: number) => void;
-  applyCoupon: (coupon: Coupon) => void;
-  setSelectedCoupon: (coupon: Coupon | null) => void;
-  completeOrder: () => void;
-  calculateItemTotal: (item: CartItem) => number;
-}
-
-const Cart: React.FC<CartProps> = ({
-  cart,
-  selectedCoupon,
-  totals,
-  removeFromCart,
-  updateQuantity,
-  applyCoupon,
-  setSelectedCoupon,
-  completeOrder,
-  calculateItemTotal,
-}) => {
+const Cart: React.FC = () => {
+  const [cart] = useAtom(cartAtom);
+  const [selectedCoupon, setSelectedCoupon] = useAtom(selectedCouponAtom);
+  const totals = useAtomValue(totalsAtom);
   const coupons = useAtomValue(couponsAtom);
+  const removeFromCart = useSetAtom(removeFromCartAtom);
+  const updateQuantity = useSetAtom(updateQuantityAtom);
+  const applyCoupon = useSetAtom(applyCouponAtom);
+  const completeOrder = useSetAtom(completeOrderAtom);
+  const calculateItemTotal = useAtomValue(itemTotalSelector);
 
   return (
     <div className="lg:col-span-1">
@@ -73,14 +65,14 @@ const Cart: React.FC<CartProps> = ({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <Button 
-                          onClick={() => updateQuantity(item.product.id, item.quantity - 1)} 
+                          onClick={() => updateQuantity({ product: item.product, newQuantity: item.quantity - 1 })} 
                           className="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100"
                         >
                           <span className="text-xs">−</span>
                         </Button>
                         <span className="mx-3 text-sm font-medium w-8 text-center">{item.quantity}</span>
                         <Button 
-                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)} 
+                          onClick={() => updateQuantity({ product: item.product, newQuantity: item.quantity + 1 })} 
                           className="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100"
                         >
                           <span className="text-xs">+</span>

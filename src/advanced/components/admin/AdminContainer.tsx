@@ -3,11 +3,7 @@ import Button from '../ui/Button';
 import AdminProduct from './products/AdminProduct';
 import AdminCoupon from './coupons/AdminCoupon';
 
-interface AdminContainerProps {
-  formatPrice: (price: number, productId?: string) => string;
-}
-
-const AdminContainer: React.FC<AdminContainerProps> = ({ formatPrice }) => {
+const AdminContainer: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'products' | 'coupons'>('products');
 
   return (
@@ -41,11 +37,7 @@ const AdminContainer: React.FC<AdminContainerProps> = ({ formatPrice }) => {
         </nav>
       </div>
 
-      {activeTab === 'products' ? (
-        <AdminProduct formatPrice={formatPrice} />
-      ) : (
-        <AdminCoupon />
-      )}
+      {activeTab === 'products' ? <AdminProduct /> : <AdminCoupon />}
     </div>
   );
 };

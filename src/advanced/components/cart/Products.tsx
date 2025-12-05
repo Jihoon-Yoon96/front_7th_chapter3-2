@@ -1,22 +1,16 @@
 import React from 'react';
-import { Product } from '../../../types.ts';
 import Button from '../ui/Button.tsx';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { filteredProductsAtom, searchTermAtom } from '../../store/productAtoms.ts';
+import { addToCartAtom, remainingStockSelector } from '../../store/cartAtoms.ts';
+import { priceFormatterAtom } from '../../store/uiAtoms.ts'; // priceFormatterAtom 임포트
 
-interface ProductListProps {
-  getRemainingStock: (product: Product) => number;
-  formatPrice: (price: number, productId?: string) => string;
-  addToCart: (product: Product) => void;
-}
-
-const Products: React.FC<ProductListProps> = ({
-  getRemainingStock,
-  formatPrice,
-  addToCart,
-}) => {
+const Products: React.FC = () => {
   const products = useAtomValue(filteredProductsAtom);
   const searchTerm = useAtomValue(searchTermAtom);
+  const addToCart = useSetAtom(addToCartAtom);
+  const getRemainingStock = useAtomValue(remainingStockSelector);
+  const formatPrice = useAtomValue(priceFormatterAtom); // priceFormatterAtom 사용
 
   return (
     <div className="lg:col-span-3">
@@ -27,7 +21,7 @@ const Products: React.FC<ProductListProps> = ({
             총 {products.length}개 상품
           </div>
         </div>
-        {products.length === 0 ? (
+        {products.length === 0 && searchTerm ? (
           <div className="text-center py-12">
             <p className="text-gray-500">"{searchTerm}"에 대한 검색 결과가 없습니다.</p>
           </div>

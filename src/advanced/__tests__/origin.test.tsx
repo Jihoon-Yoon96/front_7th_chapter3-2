@@ -53,6 +53,7 @@ describe('쇼핑몰 앱 통합 테스트', () => {
       fireEvent.click(addButtons[0]);
       
       // 알림 메시지 확인
+      // await waitFor(()=>{}, {timeout: 1000})
       await waitFor(() => {
         expect(screen.getByText('장바구니에 담았습니다')).toBeInTheDocument();
       });

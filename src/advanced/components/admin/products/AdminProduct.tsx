@@ -6,11 +6,7 @@ import { useSetAtom } from 'jotai';
 import { addProductAtom, updateProductAtom } from '../../../store/productAtoms';
 import { Product } from '../../../../types';
 
-interface AdminProductProps {
-  formatPrice: (price: number, productId?: string) => string;
-}
-
-const AdminProduct: React.FC<AdminProductProps> = ({ formatPrice }) => {
+const AdminProduct: React.FC = () => {
   const addProduct = useSetAtom(addProductAtom);
   const updateProduct = useSetAtom(updateProductAtom);
 
@@ -69,7 +65,6 @@ const AdminProduct: React.FC<AdminProductProps> = ({ formatPrice }) => {
 
       <AdminProductList 
         startEditProduct={startEditProduct}
-        formatPrice={formatPrice}
       />
 
       {showProductForm && (
