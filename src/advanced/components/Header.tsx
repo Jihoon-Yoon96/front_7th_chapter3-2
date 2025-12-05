@@ -1,15 +1,17 @@
 import React from 'react';
 import Button from './ui/Button';
+import { useAtom } from 'jotai';
+import { isAdminAtom } from '../store/uiAtoms';
 
 interface HeaderProps {
-  isAdmin: boolean;
-  setIsAdmin: (isAdmin: boolean) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   cartItemCount: number;
 }
 
-const Header: React.FC<HeaderProps> = ({ isAdmin, setIsAdmin, searchTerm, setSearchTerm, cartItemCount }) => {
+const Header: React.FC<HeaderProps> = ({ searchTerm, setSearchTerm, cartItemCount }) => {
+  const [isAdmin, setIsAdmin] = useAtom(isAdminAtom);
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-40 border-b">
       <div className="max-w-7xl mx-auto px-4">

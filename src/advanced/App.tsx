@@ -8,9 +8,11 @@ import { useCoupons } from './hooks/useCoupons';
 import { useCart } from './hooks/useCart';
 import { useNotifications } from './hooks/useNotifications';
 import { formatPrice as formatCurrency } from './utils/formatters';
+import { useAtomValue } from 'jotai';
+import { isAdminAtom } from './store/uiAtoms';
 
 const App = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const isAdmin = useAtomValue(isAdminAtom);
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
@@ -64,8 +66,6 @@ const App = () => {
       <div className="min-h-screen bg-gray-50">
         <NotificationContainer notifications={notifications} onClose={removeNotification} />
         <Header
-            isAdmin={isAdmin}
-            setIsAdmin={setIsAdmin}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             cartItemCount={totalItemCount}
