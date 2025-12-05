@@ -5,7 +5,13 @@ import { Product } from '../entities/product/model/types';
 import { ProductWithUI } from '../model/productModels';
 import { getRemainingStock } from '../entities/product/lib/stock';
 import { calculateCartTotal, calculateItemTotal } from '../entities/cart/lib/calc';
-import { addItem, updateItemQuantity as updateCartItemQuantityFn } from '../entities/cart/lib/cartManager';
+import { 
+  addItem, 
+  updateItemQuantity, 
+  removeItem, 
+  applyCouponToCart, 
+  completeOrderProcess 
+} from '../entities/cart/lib/cartManager';
 
 type AddNotification = (message: string, type?: 'error' | 'success' | 'warning') => void;
 
@@ -43,14 +49,15 @@ export const useCart = (products: ProductWithUI[], addNotification: AddNotificat
   }, [cart, addNotification]);
 
   const removeFromCart = useCallback((productId: string) => {
-    setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
-  }, []);
+    const { newCart } = removeItem(cart, productId);
+    setCart(newCart);
+  }, [cart]);
 
-  const updateCartItemQuantity = useCallback((productId: string, newQuantity: number) => {
+  const updateQuantity = useCallback((productId: string, newQuantity: number) => {
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
-    const { newCart, error } = updateCartItemQuantityFn(cart, productId, newQuantity, product.stock);
+    const { newCart, error } = updateItemQuantity(cart, productId, newQuantity, product.stock);
     setCart(newCart);
     if (error) {
       addNotification(error, 'error');
@@ -58,23 +65,25 @@ export const useCart = (products: ProductWithUI[], addNotification: AddNotificat
   }, [cart, products, addNotification]);
 
   const applyCoupon = useCallback((coupon: Coupon) => {
-    const currentTotal = calculateCartTotal(cart, selectedCoupon).totalAfterDiscount;
-    
-    if (currentTotal < 10000 && coupon.discountType === 'percentage') {
-      addNotification('percentage 쿠폰은 10,000원 이상 구매 시 사용 가능합니다.', 'error');
-      return;
+    const { success, message } = applyCouponToCart(cart, coupon);
+    if (success) {
+      setSelectedCoupon(coupon);
+      addNotification(message, 'success');
+    } else {
+      addNotification(message, 'error');
     }
-
-    setSelectedCoupon(coupon);
-    addNotification('쿠폰이 적용되었습니다.', 'success');
-  }, [cart, selectedCoupon, addNotification]);
+  }, [cart, addNotification]);
 
   const completeOrder = useCallback(() => {
-    const orderNumber = `ORD-${Date.now()}`;
-    addNotification(`주문이 완료되었습니다. 주문번호: ${orderNumber}`, 'success');
-    setCart([]);
-    setSelectedCoupon(null);
-  }, [addNotification]);
+    const { success, message, newCart } = completeOrderProcess(cart);
+    if (success) {
+      addNotification(message, 'success');
+      setCart(newCart);
+      setSelectedCoupon(null);
+    } else {
+      addNotification(message, 'error');
+    }
+  }, [cart, addNotification]);
 
   return {
     cart,
@@ -82,7 +91,7 @@ export const useCart = (products: ProductWithUI[], addNotification: AddNotificat
     totals,
     addToCart,
     removeFromCart,
-    updateQuantity: updateCartItemQuantity,
+    updateQuantity,
     applyCoupon,
     setSelectedCoupon,
     completeOrder,
