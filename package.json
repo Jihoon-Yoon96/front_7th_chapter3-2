@@ -6,7 +6,7 @@
   "scripts": {
     "dev:origin": "vite --open ./index.origin.html",
     "dev:basic": "vite --open ./index.basic.html",
-    "dev:advanced": "vite --open index.html",
+    "dev:advanced": "vite --open ./index.html",
     "deploy": "gh-pages -d dist",
     "test": "vitest",
     "test:origin": "vitest src/origin",
