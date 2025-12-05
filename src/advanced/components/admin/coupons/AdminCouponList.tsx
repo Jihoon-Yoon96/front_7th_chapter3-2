@@ -1,14 +1,16 @@
 import React from 'react';
-import { Coupon } from '../../../../types';
 import Button from '../../ui/Button';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { couponsAtom, deleteCouponAtom } from '../../../store/couponAtoms';
 
 interface AdminCouponListProps {
-  coupons: Coupon[];
-  deleteCoupon: (couponCode: string) => void;
   setShowCouponForm: (show: boolean) => void;
 }
 
-const AdminCouponList: React.FC<AdminCouponListProps> = ({ coupons, deleteCoupon, setShowCouponForm }) => {
+const AdminCouponList: React.FC<AdminCouponListProps> = ({ setShowCouponForm }) => {
+  const coupons = useAtomValue(couponsAtom);
+  const deleteCoupon = useSetAtom(deleteCouponAtom);
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {coupons.map(coupon => (

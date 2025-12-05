@@ -1,10 +1,11 @@
 import React from 'react';
 import { CartItem, Coupon } from '../../../types.ts';
 import Button from '../ui/Button.tsx';
+import { useAtomValue } from 'jotai';
+import { couponsAtom } from '../../store/couponAtoms.ts';
 
 interface CartProps {
   cart: CartItem[];
-  coupons: Coupon[];
   selectedCoupon: Coupon | null;
   totals: {
     totalBeforeDiscount: number;
@@ -20,7 +21,6 @@ interface CartProps {
 
 const Cart: React.FC<CartProps> = ({
   cart,
-  coupons,
   selectedCoupon,
   totals,
   removeFromCart,
@@ -30,6 +30,8 @@ const Cart: React.FC<CartProps> = ({
   completeOrder,
   calculateItemTotal,
 }) => {
+  const coupons = useAtomValue(couponsAtom);
+
   return (
     <div className="lg:col-span-1">
       <div className="sticky top-24 space-y-4">

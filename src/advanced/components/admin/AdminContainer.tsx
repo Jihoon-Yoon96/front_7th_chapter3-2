@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
-import { Coupon } from '../../entities/coupon/model/types';
 import Button from '../ui/Button';
 import AdminProduct from './products/AdminProduct';
 import AdminCoupon from './coupons/AdminCoupon';
 
 interface AdminContainerProps {
-  coupons: Coupon[];
-  addCoupon: (newCoupon: Coupon) => void;
-  deleteCoupon: (couponCode: string) => void;
   formatPrice: (price: number, productId?: string) => string;
 }
 
-const AdminContainer: React.FC<AdminContainerProps> = (props) => {
+const AdminContainer: React.FC<AdminContainerProps> = ({ formatPrice }) => {
   const [activeTab, setActiveTab] = useState<'products' | 'coupons'>('products');
 
   return (
@@ -46,9 +42,9 @@ const AdminContainer: React.FC<AdminContainerProps> = (props) => {
       </div>
 
       {activeTab === 'products' ? (
-        <AdminProduct formatPrice={props.formatPrice} />
+        <AdminProduct formatPrice={formatPrice} />
       ) : (
-        <AdminCoupon {...props} />
+        <AdminCoupon />
       )}
     </div>
   );

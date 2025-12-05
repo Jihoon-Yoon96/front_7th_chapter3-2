@@ -7,7 +7,6 @@ import Cart from './Cart';
 
 interface CartContainerProps {
   cart: CartItem[];
-  coupons: Coupon[];
   selectedCoupon: Coupon | null;
   totals: {
     totalBeforeDiscount: number;
@@ -34,7 +33,6 @@ const CartContainer: React.FC<CartContainerProps> = (props) => {
       />
       <Cart 
         cart={props.cart}
-        coupons={props.coupons}
         selectedCoupon={props.selectedCoupon}
         totals={props.totals}
         removeFromCart={props.removeFromCart}

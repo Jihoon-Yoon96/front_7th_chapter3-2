@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
-import { Coupon } from '../../../../types';
 import AdminCouponList from './AdminCouponList';
 import AdminCouponForm from './AdminCouponForm';
+import { useSetAtom } from 'jotai';
+import { addCouponAtom } from '../../../store/couponAtoms';
 
-interface AdminCouponProps {
-  coupons: Coupon[];
-  addCoupon: (newCoupon: Coupon) => void;
-  deleteCoupon: (couponCode: string) => void;
-  addNotification: (message: string, type?: 'error' | 'success' | 'warning') => void;
-}
-
-const AdminCoupon: React.FC<AdminCouponProps> = ({
-  coupons,
-  addCoupon,
-  deleteCoupon,
-  addNotification
-}) => {
+const AdminCoupon: React.FC = () => {
   const [showCouponForm, setShowCouponForm] = useState(false);
+  const addCoupon = useSetAtom(addCouponAtom);
 
   return (
     <section className="bg-white rounded-lg border border-gray-200">
@@ -25,15 +15,12 @@ const AdminCoupon: React.FC<AdminCouponProps> = ({
       </div>
       <div className="p-6">
         <AdminCouponList 
-          coupons={coupons}
-          deleteCoupon={deleteCoupon}
           setShowCouponForm={setShowCouponForm}
         />
         {showCouponForm && (
           <AdminCouponForm
             addCoupon={addCoupon}
             setShowCouponForm={setShowCouponForm}
-            addNotification={addNotification}
           />
         )}
       </div>
