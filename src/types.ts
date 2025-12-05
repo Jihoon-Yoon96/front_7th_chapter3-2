@@ -5,6 +5,7 @@ export interface Product {
   price: number;
   stock: number;
   discounts: Discount[];
+  isRecommended?: boolean;
 }
 
 export interface Discount {

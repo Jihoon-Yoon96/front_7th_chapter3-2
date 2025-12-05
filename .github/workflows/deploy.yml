@@ -50,7 +50,7 @@ jobs:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
 
       - name: Set advanced as default
-        run: cp dist/index.advanced.html dist/index.html
+        run: cp dist/index.html dist/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

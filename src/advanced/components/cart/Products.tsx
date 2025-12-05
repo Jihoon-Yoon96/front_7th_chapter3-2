@@ -3,7 +3,12 @@ import Button from '../ui/Button.tsx';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { filteredProductsAtom, searchTermAtom } from '../../store/productAtoms.ts';
 import { addToCartAtom, remainingStockSelector } from '../../store/cartAtoms.ts';
-import { priceFormatterAtom } from '../../store/uiAtoms.ts'; // priceFormatterAtom 임포트
+import { priceFormatterAtom } from '../../store/uiAtoms.ts';
+// import {Product} from "../../../types.ts";
+
+// interface ProductWithUI extends Product {
+//   isRecommended?: boolean;
+// }
 
 const Products: React.FC = () => {
   const products = useAtomValue(filteredProductsAtom);

@@ -4,6 +4,7 @@ export interface Product {
   price: number;
   stock: number;
   discounts: Discount[];
+  decription?: string;
 }
 
 export interface Discount {

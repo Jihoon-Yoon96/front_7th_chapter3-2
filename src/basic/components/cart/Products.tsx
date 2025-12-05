@@ -3,7 +3,6 @@ import { Product } from '../../../types.ts';
 import Button from '../ui/Button.tsx';
 
 interface ProductWithUI extends Product {
-  description?: string;
   isRecommended?: boolean;
 }
 
