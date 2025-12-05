@@ -1,20 +1,14 @@
 import React, { useState } from 'react';
 import { Coupon } from '../../entities/coupon/model/types';
-import { ProductWithUI } from '../../model/productModels';
 import Button from '../ui/Button';
 import AdminProduct from './products/AdminProduct';
 import AdminCoupon from './coupons/AdminCoupon';
 
 interface AdminContainerProps {
-  products: ProductWithUI[];
   coupons: Coupon[];
-  addProduct: (newProduct: Omit<ProductWithUI, 'id'>) => void;
-  updateProduct: (productId: string, updates: Partial<ProductWithUI>) => void;
-  deleteProduct: (productId: string) => void;
   addCoupon: (newCoupon: Coupon) => void;
   deleteCoupon: (couponCode: string) => void;
   formatPrice: (price: number, productId?: string) => string;
-  addNotification: (message: string, type?: 'error' | 'success' | 'warning') => void;
 }
 
 const AdminContainer: React.FC<AdminContainerProps> = (props) => {
@@ -52,7 +46,7 @@ const AdminContainer: React.FC<AdminContainerProps> = (props) => {
       </div>
 
       {activeTab === 'products' ? (
-        <AdminProduct {...props} />
+        <AdminProduct formatPrice={props.formatPrice} />
       ) : (
         <AdminCoupon {...props} />
       )}

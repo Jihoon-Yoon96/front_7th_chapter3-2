@@ -1,27 +1,23 @@
 import React from 'react';
 import { Product } from '../../../types.ts';
 import Button from '../ui/Button.tsx';
-
-interface ProductWithUI extends Product {
-  description?: string;
-  isRecommended?: boolean;
-}
+import { useAtomValue } from 'jotai';
+import { filteredProductsAtom, searchTermAtom } from '../../store/productAtoms.ts';
 
 interface ProductListProps {
-  products: ProductWithUI[];
   getRemainingStock: (product: Product) => number;
   formatPrice: (price: number, productId?: string) => string;
-  addToCart: (product: ProductWithUI) => void;
-  debouncedSearchTerm: string;
+  addToCart: (product: Product) => void;
 }
 
 const Products: React.FC<ProductListProps> = ({
-  products,
   getRemainingStock,
   formatPrice,
   addToCart,
-  debouncedSearchTerm,
 }) => {
+  const products = useAtomValue(filteredProductsAtom);
+  const searchTerm = useAtomValue(searchTermAtom);
+
   return (
     <div className="lg:col-span-3">
       <section>
@@ -33,7 +29,7 @@ const Products: React.FC<ProductListProps> = ({
         </div>
         {products.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">"{debouncedSearchTerm}"에 대한 검색 결과가 없습니다.</p>
+            <p className="text-gray-500">"{searchTerm}"에 대한 검색 결과가 없습니다.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

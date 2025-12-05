@@ -1,23 +1,21 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import AdminContainer from './components/admin/AdminContainer';
 import NotificationContainer from './components/ui/Notification';
 import Header from './components/Header';
 import CartContainer from './components/cart/CartContainer';
-import { useProducts } from './hooks/useProducts';
 import { useCoupons } from './hooks/useCoupons';
 import { useCart } from './hooks/useCart';
 import { formatPrice as formatCurrency } from './utils/formatters';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { isAdminAtom } from './store/uiAtoms';
 import { addNotificationAtom } from './store/notificationAtoms';
+import { productsAtom } from './store/productAtoms';
 
 const App = () => {
   const isAdmin = useAtomValue(isAdminAtom);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+  const products = useAtomValue(productsAtom); // 상품 목록을 Jotai에서 가져옵니다.
 
   const addNotification = useSetAtom(addNotificationAtom);
-  const { products, addProduct, updateProduct, deleteProduct } = useProducts(addNotification);
   const { coupons, addCoupon, deleteCoupon } = useCoupons(addNotification);
   const {
     cart,
@@ -40,13 +38,8 @@ const App = () => {
     setTotalItemCount(count);
   }, [cart]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
+  // formatPrice는 아직 useCart의 getRemainingStock에 의존하므로 남겨둡니다.
+  // useCart 리팩토링 시 함께 제거될 예정입니다.
   const formatPrice = (price: number, productId?: string): string => {
     const product = products.find(p => p.id === productId);
     if (product && getRemainingStock(product) <= 0) {
@@ -55,37 +48,23 @@ const App = () => {
     return formatCurrency(price, { currency: isAdmin ? 'WON' : 'KRW' });
   };
 
-  const filteredProducts = debouncedSearchTerm
-      ? products.filter(product =>
-          product.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-          (product.description && product.description.toLowerCase().includes(debouncedSearchTerm.toLowerCase()))
-      )
-      : products;
-
   return (
       <div className="min-h-screen bg-gray-50">
         <NotificationContainer />
         <Header
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
             cartItemCount={totalItemCount}
         />
 
         <main className="max-w-7xl mx-auto px-4 py-8">
           {isAdmin ? (
               <AdminContainer
-                  products={products}
                   coupons={coupons}
-                  addProduct={addProduct}
-                  updateProduct={updateProduct}
-                  deleteProduct={deleteProduct}
                   addCoupon={addCoupon}
                   deleteCoupon={deleteCoupon}
                   formatPrice={formatPrice}
               />
           ) : (
               <CartContainer
-                  products={filteredProducts}
                   cart={cart}
                   coupons={coupons}
                   selectedCoupon={selectedCoupon}
@@ -99,7 +78,6 @@ const App = () => {
                   setSelectedCoupon={setSelectedCoupon}
                   completeOrder={completeOrder}
                   calculateItemTotal={calculateItemTotal}
-                  debouncedSearchTerm={debouncedSearchTerm}
               />
           )}
         </main>

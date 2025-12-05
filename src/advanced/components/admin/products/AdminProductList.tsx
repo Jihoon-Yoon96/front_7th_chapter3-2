@@ -1,15 +1,18 @@
 import React from 'react';
-import { ProductWithUI } from '../../../model/productModels';
+import { Product } from '../../../types';
 import Button from '../../ui/Button';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { productsAtom, deleteProductAtom } from '../../../store/productAtoms';
 
 interface AdminProductListProps {
-  products: ProductWithUI[];
-  deleteProduct: (productId: string) => void;
-  startEditProduct: (product: ProductWithUI) => void;
+  startEditProduct: (product: Product) => void;
   formatPrice: (price: number, productId?: string) => string;
 }
 
-const AdminProductList: React.FC<AdminProductListProps> = ({ products, deleteProduct, startEditProduct, formatPrice }) => {
+const AdminProductList: React.FC<AdminProductListProps> = ({ startEditProduct, formatPrice }) => {
+  const products = useAtomValue(productsAtom);
+  const deleteProduct = useSetAtom(deleteProductAtom);
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full">

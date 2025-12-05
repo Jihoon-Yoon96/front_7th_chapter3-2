@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from './ui/Button';
 import { useAtom } from 'jotai';
 import { isAdminAtom } from '../store/uiAtoms';
+import { searchTermAtom } from '../store/productAtoms';
 
 interface HeaderProps {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
   cartItemCount: number;
 }
 
-const Header: React.FC<HeaderProps> = ({ searchTerm, setSearchTerm, cartItemCount }) => {
+const Header: React.FC<HeaderProps> = ({ cartItemCount }) => {
   const [isAdmin, setIsAdmin] = useAtom(isAdminAtom);
+  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
+
+  // 관리자 모드로 전환 시 검색어 초기화
+  useEffect(() => {
+    if (isAdmin) {
+      setSearchTerm('');
+    }
+  }, [isAdmin, setSearchTerm]);
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-40 border-b">

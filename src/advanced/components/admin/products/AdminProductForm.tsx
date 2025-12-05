@@ -1,18 +1,14 @@
 import React from 'react';
 import Button from '../../ui/Button';
+import { useSetAtom } from 'jotai';
+import { addNotificationAtom } from '../../../store/notificationAtoms';
+import { Product } from '../../../../types';
 
 interface AdminProductFormProps {
-  productForm: {
-    name: string;
-    price: number;
-    stock: number;
-    description: string;
-    discounts: Array<{ quantity: number; rate: number }>;
-  };
-  setProductForm: React.Dispatch<React.SetStateAction<AdminProductFormProps['productForm']>>;
+  productForm: Omit<Product, 'id'>;
+  setProductForm: React.Dispatch<React.SetStateAction<Omit<Product, 'id'>>>;
   handleProductSubmit: (e: React.FormEvent) => void;
   editingProduct: string | null;
-  addNotification: (message: string, type?: 'error' | 'success' | 'warning') => void;
   setShowProductForm: (show: boolean) => void;
   setEditingProduct: (id: string | null) => void;
 }
@@ -22,10 +18,11 @@ const AdminProductForm: React.FC<AdminProductFormProps> = ({
   setProductForm,
   handleProductSubmit,
   editingProduct,
-  addNotification,
   setShowProductForm,
   setEditingProduct
 }) => {
+  const addNotification = useSetAtom(addNotificationAtom);
+
   return (
     <div className="p-6 border-t border-gray-200 bg-gray-50">
       <form onSubmit={handleProductSubmit} className="space-y-4">
@@ -68,7 +65,7 @@ const AdminProductForm: React.FC<AdminProductFormProps> = ({
                 if (value === '') {
                   setProductForm({ ...productForm, price: 0 });
                 } else if (parseInt(value) < 0) {
-                  addNotification('가격은 0보다 커야 합니다', 'error');
+                  addNotification('가격은 0보다 커야 합니다');
                   setProductForm({ ...productForm, price: 0 });
                 }
               }}
@@ -93,10 +90,10 @@ const AdminProductForm: React.FC<AdminProductFormProps> = ({
                 if (value === '') {
                   setProductForm({ ...productForm, stock: 0 });
                 } else if (parseInt(value) < 0) {
-                  addNotification('재고는 0보다 커야 합니다', 'error');
+                  addNotification('재고는 0보다 커야 합니다');
                   setProductForm({ ...productForm, stock: 0 });
                 } else if (parseInt(value) > 9999) {
-                  addNotification('재고는 9999개를 초과할 수 없습니다', 'error');
+                  addNotification('재고는 9999개를 초과할 수 없습니다');
                   setProductForm({ ...productForm, stock: 9999 });
                 }
               }}

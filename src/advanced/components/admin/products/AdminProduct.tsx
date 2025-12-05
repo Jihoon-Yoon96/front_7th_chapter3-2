@@ -1,53 +1,43 @@
 import React, { useState } from 'react';
-import { ProductWithUI } from '../../../model/productModels';
 import Button from '../../ui/Button';
 import AdminProductList from './AdminProductList';
 import AdminProductForm from './AdminProductForm';
+import { useSetAtom } from 'jotai';
+import { addProductAtom, updateProductAtom } from '../../../store/productAtoms';
+import { Product } from '../../../../types';
 
 interface AdminProductProps {
-  products: ProductWithUI[];
-  addProduct: (newProduct: Omit<ProductWithUI, 'id'>) => void;
-  updateProduct: (productId: string, updates: Partial<ProductWithUI>) => void;
-  deleteProduct: (productId: string) => void;
   formatPrice: (price: number, productId?: string) => string;
-  addNotification: (message: string, type?: 'error' | 'success' | 'warning') => void;
 }
 
-const AdminProduct: React.FC<AdminProductProps> = ({
-  products,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-  formatPrice,
-  addNotification
-}) => {
+const AdminProduct: React.FC<AdminProductProps> = ({ formatPrice }) => {
+  const addProduct = useSetAtom(addProductAtom);
+  const updateProduct = useSetAtom(updateProductAtom);
+
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
-  const [productForm, setProductForm] = useState({
+  const [productForm, setProductForm] = useState<Omit<Product, 'id'>>({
     name: '',
     price: 0,
     stock: 0,
     description: '',
-    discounts: [] as Array<{ quantity: number; rate: number }>
+    discounts: []
   });
 
   const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingProduct && editingProduct !== 'new') {
-      updateProduct(editingProduct, productForm);
+      updateProduct({ ...productForm, id: editingProduct });
       setEditingProduct(null);
     } else {
-      addProduct({
-        ...productForm,
-        discounts: productForm.discounts
-      });
+      addProduct(productForm);
     }
     setProductForm({ name: '', price: 0, stock: 0, description: '', discounts: [] });
     setEditingProduct(null);
     setShowProductForm(false);
   };
 
-  const startEditProduct = (product: ProductWithUI) => {
+  const startEditProduct = (product: Product) => {
     setEditingProduct(product.id);
     setProductForm({
       name: product.name,
@@ -78,8 +68,6 @@ const AdminProduct: React.FC<AdminProductProps> = ({
       </div>
 
       <AdminProductList 
-        products={products}
-        deleteProduct={deleteProduct}
         startEditProduct={startEditProduct}
         formatPrice={formatPrice}
       />
@@ -90,7 +78,6 @@ const AdminProduct: React.FC<AdminProductProps> = ({
           setProductForm={setProductForm}
           handleProductSubmit={handleProductSubmit}
           editingProduct={editingProduct}
-          addNotification={addNotification}
           setShowProductForm={setShowProductForm}
           setEditingProduct={setEditingProduct}
         />
